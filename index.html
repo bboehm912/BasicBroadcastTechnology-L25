@@ -211,6 +211,7 @@ input, textarea, select {
 .muted { color: var(--text-muted); }
 .italic { font-style: italic; }
 .subtitle { color: var(--text-muted); }
+
 </style>
 </head>
 <body>
@@ -302,7 +303,7 @@ const stockImagePool = [
   'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=300&q=80'
 ];
 
-const iconPool = ['🎬', '🎧', '✂️️', '🎙️', '📺', '📝'];
+const iconPool = ['🎬', '🎧', '✂', '🎙️', '📺', '📝'];
 
 function renderSlides(slides) {
   const stage = document.getElementById('slide-stage');
@@ -382,21 +383,7 @@ function renderResources(resources) {
   const container = document.getElementById('resource-list');
   container.innerHTML = '';
 
-  let resourceList = [];
-
-  if (Array.isArray(resources)) {
-    resourceList = resources;
-  } else if (resources && typeof resources === 'object') {
-    if (Array.isArray(resources.buttons)) {
-      resourceList = resources.buttons;
-    } else if (Array.isArray(resources.files)) {
-      resourceList = resources.files;
-    } else if (Array.isArray(resources.items)) {
-      resourceList = resources.items;
-    } else if (resources.file || resources.link || resources.url) {
-      resourceList = [resources];
-    }
-  }
+  let resourceList = Array.isArray(resources) ? resources : [];
 
   resourceList.forEach(res => {
     const card = document.createElement('div');
@@ -405,24 +392,14 @@ function renderResources(resources) {
     if (typeof res === 'string') {
       const cleanText = res.trim();
       const isUrl = /^https?:\/\//i.test(cleanText);
-      const isFile = /\.(pdf|docx?|pptx?|xlsx?)$/i.test(cleanText);
 
       if (isUrl) {
         card.innerHTML = `
           <div>
-            <strong>${cleanText}</strong><br/>
-            <small>External Web Link</small>
+            <strong>Canva Video Editor</strong><br/>
+            <small>${cleanText}</small>
           </div>
-          <a href="${cleanText}" target="_blank" rel="noopener noreferrer" class="ctrl-btn">Open Link</a>
-        `;
-      } else if (isFile) {
-        const label = cleanText.split('/').pop();
-        card.innerHTML = `
-          <div>
-            <strong>${label}</strong><br/>
-            <small>Repository file</small>
-          </div>
-          <a href="${cleanText}" target="_blank" rel="noopener noreferrer" class="ctrl-btn">Open Resource</a>
+          <a href="${cleanText}" target="_blank" rel="noopener noreferrer" class="ctrl-btn">Open Canva</a>
         `;
       } else {
         card.innerHTML = `
@@ -436,14 +413,13 @@ function renderResources(resources) {
       return;
     }
 
-    const resourceUrl = res.file || res.link || res.url || res.href || '#';
+    const resourceUrl = res.url || res.file || res.link || res.href || '#';
     const resourceTitle = res.title || res.name || res.label || 'Resource Item';
-    const resourceDescription = res.description || res.summary || '';
-    const fileName = resourceUrl && typeof resourceUrl === 'string' ? resourceUrl.split('/').pop() : '';
+    const resourceDescription = res.description || res.summary || 'Course reference material';
 
     card.innerHTML = `
       <div>
-        <strong>${resourceTitle || fileName || 'Resource Item'}</strong><br/>
+        <strong>${resourceTitle}</strong><br/>
         <small>${resourceDescription}</small>
       </div>
       ${resourceUrl && resourceUrl !== '#' ? `<a href="${resourceUrl}" target="_blank" rel="noopener noreferrer" class="ctrl-btn">Open Resource</a>` : ''}
@@ -463,7 +439,6 @@ function renderForm(fields) {
 
   const fieldList = Array.isArray(fields) ? fields : [];
 
-  // Top Student Info Header
   const nameGroup = document.createElement('div');
   nameGroup.className = 'form-group';
   nameGroup.innerHTML = `
@@ -563,7 +538,55 @@ function switchTab(key) {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => initLesson({"day": 25, "date": "October 6", "subject": "Basic Broadcast Technology: A CTE Pathway Course", "unit": "Unit 6: Basic Editing Concepts", "topic": "Advanced Cuts: J and L Cuts", "primary_focus": "Mastering split edits to improve the pacing and flow of news interviews.", "core_objectives": "Execute three J-cuts and three L-cuts within a 60-second news Segment.", "weekly_standards_focus": ["CTB.12.03 (Editing Principles, Continuity, & Emphasis)", "CTB.01.03 (NLE Technical Terminology)"], "bellringers": ["What is a split edit, and how does audio-video offset differ from a standard straight cut?", "Define a 'J-Cut' in terms of audio and video lead times.", "Define an 'L-Cut' and explain its primary purpose during an interview sequence.", "How do split edits prevent visual monotony during dialogue-heavy news packages?"], "slides": [{"title": "Understanding Split Edits in Broadcast", "standard": "CTB.01.03", "bullets": ["Split edits decouple video cut points from audio transition boundaries.", "Audio leads or lags video to create seamless narrative transitions between speakers.", "Straight cuts create robotic back-and-forth edits, whereas split edits simulate natural human focus."], "callout": "Split edits hide edit points by establishing audio continuity before or after visual cuts."}, {"title": "Anatomy of the J-Cut", "standard": "CTB.01.03", "bullets": ["In a J-Cut, the audio of the upcoming scene/speaker is heard before the video appears.", "The timeline pattern forms the letter 'J' as audio extends to the left of video.", "Used to prep the audience's ears for incoming dialogue or ambient sound changes."], "callout": "J-Cuts draw viewer attention forward by introducing sound before visual confirmation."}, {"title": "Anatomy of the L-Cut", "standard": "CTB.01.03", "bullets": ["In an L-Cut, the video transitions to a new clip while current audio continues playing.", "The timeline pattern forms the letter 'L' as audio extends to the right of video.", "Allows viewers to observe subject reaction shots while hearing continuing voice track."], "callout": "L-Cuts reveal emotional reaction footage without breaking the speaker's vocal continuity."}, {"title": "Executing J-Cuts in NLE Timelines", "standard": "CTB.12.03", "bullets": ["Unlink video and audio tracks or use option/alt key modifier trims on media clips.", "Drag the video track's edit point to the right while leaving audio handles intact.", "Fine-tune the lead time (typically 12 to 30 frames) to match speech cadence."], "callout": "Precision trimming of 10 to 20 frames creates natural audio leads in news soundbites."}, {"title": "Executing L-Cuts in NLE Timelines", "standard": "CTB.12.03", "bullets": ["Extend incoming video over outgoing audio using rolling edit or trim selection tools.", "Cut to reaction shots or relevant B-roll while speaker's sentence finishes.", "Verify that audio tails do not overlap improperly with subsequent soundbites."], "callout": "L-Cuts maintain dialogue context while showing relevant visual evidence or reactions."}, {"title": "Pacing News Interviews with Split Edits", "standard": "CTB.12.03", "bullets": ["Eliminate unnatural pauses between reporter questions and interviewee responses.", "Smooth over awkward audio jump cuts by masking cut points with continuous dialogue.", "Enhance broadcast rhythm to maintain audience engagement during factual reporting."], "callout": "Seamless split edits establish professional broadcast polish and eliminate choppy transitions."}, {"title": "Integrating Reaction Shots and B-Roll", "standard": "CTB.12.03", "bullets": ["Position B-roll clips over dialogue tracks to illustrate key discussion topics.", "Ensure cut points align with sentence structures and natural breathing pauses.", "Maintain visual continuity across camera angles to avoid disorienting viewers."], "callout": "Effective B-roll placement via L-cuts reinforces soundbite credibility with visual evidence."}, {"title": "Trimming Tools: Rolling and Ripple Edit", "standard": "CTB.01.03", "bullets": ["Rolling Edit tool adjusts edit points between adjacent clips without changing overall sequence length.", "Ripple Edit tool trims clips while shifting subsequent timeline media automatically.", "Keyboard shortcuts allow frame-by-frame nudge control for split edit alignment."], "callout": "Mastering Rolling Edits enables rapid adjustment of J and L cut boundaries on timeline clips."}, {"title": "Audio Crossfades and Smoothing", "standard": "CTB.12.03", "bullets": ["Apply micro constant-power crossfades (2 to 4 frames) over audio trim edges.", "Prevent digital audio pops or clicks caused by abrupt zero-crossing interruptions.", "Balance audio levels between adjacent clips to guarantee uniform loudness."], "callout": "Micro crossfades remove technical artifacts and produce seamless audio transitions."}, {"title": "Formatting 60-Second News Segments", "standard": "CTB.12.03", "bullets": ["Structure 60-second segments with intro anchor voice, interview soundbites, and outro sign-off.", "Incorporate three distinct J-cuts and three L-cuts within the broadcast package timeline.", "Verify strict compliance with broadcast timing specifications down to the exact frame."], "callout": "Structuring tight 60-second packages requires strict frame budget management and flow."}, {"title": "Utilizing Web-Based Editors (Canva Video Editor)", "standard": "CTB.01.03", "bullets": ["Leverage web-based timeline tools when primary NLE suites are inaccessible.", "Split audio and video tracks separately on web timelines to achieve split edit effects.", "Export normalized video files for broadcast evaluation and review."], "callout": "Core split edit principles remain consistent across professional NLEs and web-based tools."}, {"title": "Reviewing Technical Continuity & Flow", "standard": "CTB.12.03", "bullets": ["Play sequence back with eyes closed to evaluate audio transition smoothness.", "Inspect video cuts to ensure reaction shots enhance rather than distract from narration.", "Confirm that all three J-cuts and three L-cuts meet standard broadcast quality thresholds."], "callout": "Dual audio-visual evaluation ensures split edits enhance narrative clarity."}], "resources": ["Canva Video Editor Link"], "form": [{"id": 1, "type": "multiple_choice", "question": "What defines a J-Cut in non-linear video editing?", "options": ["Audio transitions after video changes", "Audio transitions before video changes", "Video transitions without audio", "Both audio and video cut simultaneously"], "correct_answer": "Audio transitions before video changes"}, {"id": 2, "type": "multiple_choice", "question": "What defines an L-Cut in non-linear video editing?", "options": ["Audio transitions before video changes", "Video transitions while previous clip's audio continues", "Audio is completely removed", "Video is locked while audio fades out"], "correct_answer": "Video transitions while previous clip's audio continues"}, {"id": 3, "type": "multiple_choice", "question": "Which tool adjusts the edit point between two adjacent clips without altering total sequence duration?", "options": ["Ripple Edit", "Rolling Edit", "Razor Tool", "Slip Tool"], "correct_answer": "Rolling Edit"}, {"id": 4, "type": "short_answer", "question": "Explain how an L-Cut improves the presentation of an interview reaction shot.", "correct_answer": "It allows the audience to watch the listener's reaction while the speaker's voice continues naturally, adding emotional depth without interrupting audio."}, {"id": 5, "type": "short_answer", "question": "Why are micro audio crossfades applied at the cut points of split edits?", "correct_answer": "To smooth out abrupt ambient audio changes and eliminate digital pops or clicks."}, {"id": 6, "type": "true_false", "question": "A straight cut always results in audio and video changing at the exact same frame.", "correct_answer": "True"}, {"id": 7, "type": "true_false", "question": "J-cuts and L-cuts can only be performed in high-end NLE software and cannot be replicated in simplified video tools.", "correct_answer": "False"}, {"id": 8, "type": "multiple_choice", "question": "What is the typical frame range for a smooth J-cut audio lead in news broadcasts?", "options": ["1-2 frames", "10-30 frames", "150-300 frames", "500 frames"], "correct_answer": "10-30 frames"}, {"id": 9, "type": "fill_in_blank", "question": "In a J-Cut, the audio clip extends to the ________ of the video clip on the editing timeline.", "correct_answer": "left"}, {"id": 10, "type": "short_answer", "question": "Describe the required criteria for the 60-second news segment objective assigned today.", "correct_answer": "The segment must be exactly 60 seconds long and contain at least three executed J-cuts and three L-cuts."}]}));
+window.addEventListener('DOMContentLoaded', () => initLesson({
+  "day": 25,
+  "date": "October 6",
+  "subject": "Basic Broadcast Technology: A CTE Pathway Course",
+  "unit": "Unit 6: Basic Editing Concepts",
+  "topic": "Advanced Cuts: J and L Cuts",
+  "primary_focus": "Mastering split edits to improve the pacing and flow of news interviews.",
+  "core_objectives": "Execute three J-cuts and three L-cuts within a 60-second news Segment.",
+  "weekly_standards_focus": ["CTB.12.03 (Editing Principles, Continuity, & Emphasis)", "CTB.01.03 (NLE Technical Terminology)"],
+  "bellringers": [
+    "What is a split edit, and how does audio-video offset differ from a standard straight cut?",
+    "Define a 'J-Cut' in terms of audio and video lead times.",
+    "Define an 'L-Cut' and explain its primary purpose during an interview sequence.",
+    "How do split edits prevent visual monotony during dialogue-heavy news packages?"
+  ],
+  "slides": [
+    {"title": "Understanding Split Edits in Broadcast", "standard": "CTB.01.03", "bullets": ["Split edits decouple video cut points from audio transition boundaries.", "Audio leads or lags video to create seamless narrative transitions between speakers.", "Straight cuts create robotic back-and-forth edits, whereas split edits simulate natural human focus."], "callout": "Split edits hide edit points by establishing audio continuity before or after visual cuts."},
+    {"title": "Anatomy of the J-Cut", "standard": "CTB.01.03", "bullets": ["In a J-Cut, the audio of the upcoming scene/speaker is heard before the video appears.", "The timeline pattern forms the letter 'J' as audio extends to the left of video.", "Used to prep the audience's ears for incoming dialogue or ambient sound changes."], "callout": "J-Cuts draw viewer attention forward by introducing sound before visual confirmation."},
+    {"title": "Anatomy of the L-Cut", "standard": "CTB.01.03", "bullets": ["In an L-Cut, the video transitions to a new clip while current audio continues playing.", "The timeline pattern forms the letter 'L' as audio extends to the right of video.", "Allows viewers to observe subject reaction shots while hearing continuing voice track."], "callout": "L-Cuts reveal emotional reaction footage without breaking the speaker's vocal continuity."},
+    {"title": "Executing J-Cuts in NLE Timelines", "standard": "CTB.12.03", "bullets": ["Unlink video and audio tracks or use option/alt key modifier trims on media clips.", "Drag the video track's edit point to the right while leaving audio handles intact.", "Fine-tune the lead time (typically 12 to 30 frames) to match speech cadence."], "callout": "Precision trimming of 10 to 20 frames creates natural audio leads in news soundbites."},
+    {"title": "Executing L-Cuts in NLE Timelines", "standard": "CTB.12.03", "bullets": ["Extend incoming video over outgoing audio using rolling edit or trim selection tools.", "Cut to reaction shots or relevant B-roll while speaker's sentence finishes.", "Verify that audio tails do not overlap improperly with subsequent soundbites."], "callout": "L-Cuts maintain dialogue context while showing relevant visual evidence or reactions."},
+    {"title": "Pacing News Interviews with Split Edits", "standard": "CTB.12.03", "bullets": ["Eliminate unnatural pauses between reporter questions and interviewee responses.", "Smooth over awkward audio jump cuts by masking cut points with continuous dialogue.", "Enhance broadcast rhythm to maintain audience engagement during factual reporting."], "callout": "Seamless split edits establish professional broadcast polish and eliminate choppy transitions."},
+    {"title": "Integrating Reaction Shots and B-Roll", "standard": "CTB.12.03", "bullets": ["Position B-roll clips over dialogue tracks to illustrate key discussion topics.", "Ensure cut points align with sentence structures and natural breathing pauses.", "Maintain visual continuity across camera angles to avoid disorienting viewers."], "callout": "Effective B-roll placement via L-cuts reinforces soundbite credibility with visual evidence."},
+    {"title": "Trimming Tools: Rolling and Ripple Edit", "standard": "CTB.01.03", "bullets": ["Rolling Edit tool adjusts edit points between adjacent clips without changing overall sequence length.", "Ripple Edit tool trims clips while shifting subsequent timeline media automatically.", "Keyboard shortcuts allow frame-by-frame nudge control for split edit alignment."], "callout": "Mastering Rolling Edits enables rapid adjustment of J and L cut boundaries on timeline clips."},
+    {"title": "Audio Crossfades and Smoothing", "standard": "CTB.12.03", "bullets": ["Apply micro constant-power crossfades (2 to 4 frames) over audio trim edges.", "Prevent digital audio pops or clicks caused by abrupt zero-crossing interruptions.", "Balance audio levels between adjacent clips to guarantee uniform loudness."], "callout": "Micro crossfades remove technical artifacts and produce seamless audio transitions."},
+    {"title": "Formatting 60-Second News Segments", "standard": "CTB.12.03", "bullets": ["Structure 60-second segments with intro anchor voice, interview soundbites, and outro sign-off.", "Incorporate three distinct J-cuts and three L-cuts within the broadcast package timeline.", "Verify strict compliance with broadcast timing specifications down to the exact frame."], "callout": "Structuring tight 60-second packages requires strict frame budget management and flow."},
+    {"title": "Utilizing Web-Based Editors (Canva Video Editor)", "standard": "CTB.01.03", "bullets": ["Leverage web-based timeline tools when primary NLE suites are inaccessible.", "Split audio and video tracks separately on web timelines to achieve split edit effects.", "Export normalized video files for broadcast evaluation and review."], "callout": "Core split edit principles remain consistent across professional NLEs and web-based tools."},
+    {"title": "Reviewing Technical Continuity & Flow", "standard": "CTB.12.03", "bullets": ["Play sequence back with eyes closed to evaluate audio transition smoothness.", "Inspect video cuts to ensure reaction shots enhance rather than distract from narration.", "Confirm that all three J-cuts and three L-cuts meet standard broadcast quality thresholds."], "callout": "Dual audio-visual evaluation ensures split edits enhance narrative clarity."}
+  ],
+  "resources": [
+    {
+      "title": "Canva Video Editor Suite",
+      "description": "Use Canva's online timeline editor to assemble video clips and practice split edit techniques.",
+      "url": "https://www.canva.com/"
+    }
+  ],
+  "form": [
+    {"id": 1, "type": "multiple_choice", "question": "What defines a J-Cut in non-linear video editing?", "options": ["Audio transitions after video changes", "Audio transitions before video changes", "Video transitions without audio", "Both audio and video cut simultaneously"], "correct_answer": "Audio transitions before video changes"},
+    {"id": 2, "type": "multiple_choice", "question": "What defines an L-Cut in non-linear video editing?", "options": ["Audio transitions before video changes", "Video transitions while previous clip's audio continues", "Audio is completely removed", "Video is locked while audio fades out"], "correct_answer": "Video transitions while previous clip's audio continues"},
+    {"id": 3, "type": "multiple_choice", "question": "Which tool adjusts the edit point between two adjacent clips without altering total sequence duration?", "options": ["Ripple Edit", "Rolling Edit", "Razor Tool", "Slip Tool"], "correct_answer": "Rolling Edit"},
+    {"id": 4, "type": "short_answer", "question": "Explain how an L-Cut improves the presentation of an interview reaction shot.", "correct_answer": "It allows the audience to watch the listener's reaction while the speaker's voice continues naturally, adding emotional depth without interrupting audio."},
+    {"id": 5, "type": "short_answer", "question": "Why are micro audio crossfades applied at the cut points of split edits?", "correct_answer": "To smooth out abrupt ambient audio changes and eliminate digital pops or clicks."},
+    {"id": 6, "type": "true_false", "question": "A straight cut always results in audio and video changing at the exact same frame.", "correct_answer": "True"},
+    {"id": 7, "type": "true_false", "question": "J-cuts and L-cuts can only be performed in high-end NLE software and cannot be replicated in simplified video tools.", "correct_answer": "False"},
+    {"id": 8, "type": "multiple_choice", "question": "What is the typical frame range for a smooth J-cut audio lead in news broadcasts?", "options": ["1-2 frames", "10-30 frames", "150-300 frames", "500 frames"], "correct_answer": "10-30 frames"},
+    {"id": 9, "type": "fill_in_blank", "question": "In a J-Cut, the audio clip extends to the ________ of the video clip on the editing timeline.", "correct_answer": "left"},
+    {"id": 10, "type": "short_answer", "question": "Describe the required criteria for the 60-second news segment objective assigned today.", "correct_answer": "The segment must be exactly 60 seconds long and contain at least three executed J-cuts and three L-cuts."}
+  ]
+}));
 </script>
 </body>
 </html>
